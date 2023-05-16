@@ -4,6 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Myworks/Android/template-android-project/app/src/main/res/layout/activity_main.xml" value="0.18333333333333332" />
+        <entry key="..\:/Myworks/Android/template-android-project/app/src/main/res/layout/fragment_first_page.xml" value="0.2536231884057971" />
+        <entry key="..\:/Myworks/Android/template-android-project/app/src/main/res/layout/fragment_home_page.xml" value="0.2536231884057971" />
+        <entry key="..\:/Myworks/Android/template-android-project/app/src/main/res/layout/fragment_second_page.xml" value="0.2536231884057971" />
       </map>
     </option>
   </component>

@@ -1,14 +1,13 @@
 package pers.u8f23.template_android_project;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.view.LayoutInflater;
 
-import android.os.Bundle;
+import pers.u8f23.template_android_project.core.BaseActivity;
+import pers.u8f23.template_android_project.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends BaseActivity<ActivityMainBinding>{
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+	@Override protected ActivityMainBinding viewBindingInflate(LayoutInflater inflater){
+		return ActivityMainBinding.inflate(getLayoutInflater());
 	}
 }

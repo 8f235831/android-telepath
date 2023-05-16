@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">template-android-project</string>
+    <string name="hello_world">Hello world.</string>
+    <string name="first_page_text">this is the first page.</string>
+    <string name="second_page_text">this is the second page.</string>
+    <string name="go_back_string">Go back</string>
+    <string name="go_first_page">First page</string>
+    <string name="go_second_page">Second page</string>
 </resources>

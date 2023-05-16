@@ -31,6 +31,22 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file("./debug.jks")
+            storePassword "123456"
+            keyAlias "debug"
+            keyPassword "123456"
+        }
+
+        debug {
+            storeFile file("./debug.jks")
+            storePassword "123456"
+            keyAlias "debug"
+            keyPassword "123456"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -80,6 +96,11 @@ dependencies {
 
     // 分包
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    // Lombok，用于自动化生成Pojo类方法。
+    //noinspection AnnotationProcessorOnCompilePath
+    implementation 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
     // Gson
     implementation 'com.google.code.gson:gson:2.9.0'
