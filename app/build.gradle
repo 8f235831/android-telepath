@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "pers.u8f23.template_android_project"
-        minSdk 21
+        minSdk 24
         targetSdk 32
         versionCode 1
         versionName "1.0"
