@@ -13,6 +13,7 @@ import androidx.viewbinding.ViewBinding;
  */
 public abstract class BaseViewWidget<Binding extends ViewBinding>{
 	/** 布局Binding。 */
+	@NonNull
 	protected final Binding binding;
 
 	/**
@@ -20,6 +21,10 @@ public abstract class BaseViewWidget<Binding extends ViewBinding>{
 	 */
 	public BaseViewWidget(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent){
 		binding = viewBindingInflate(inflater, parent);
+	}
+
+	private BaseViewWidget(@NonNull Binding binding){
+		this.binding = binding;
 	}
 
 	/**
@@ -43,7 +48,8 @@ public abstract class BaseViewWidget<Binding extends ViewBinding>{
 	 *
 	 * @return Binding
 	 */
-	public Binding getBinding(){
+	@NonNull
+	public final Binding getBinding(){
 		return binding;
 	}
 
@@ -52,7 +58,28 @@ public abstract class BaseViewWidget<Binding extends ViewBinding>{
 	 *
 	 * @return View
 	 */
-	public View getView(){
+	@NonNull
+	public final View getView(){
 		return binding.getRoot();
+	}
+
+	interface BaseViewWidgetBindingInflater<Binding extends ViewBinding>{
+		@NonNull
+		Binding inflate();
+	}
+
+	@NonNull
+	public static <Binding extends ViewBinding> BaseViewWidget<Binding> getInstance(
+		@NonNull BaseViewWidgetBindingInflater<Binding> inflater
+	){
+		Binding binding = inflater.inflate();
+		return new BaseViewWidget<Binding>(binding){
+			// 已通过构造方法参数直接提供binding，因此仅在形式上重写此方法。
+			@NonNull @Override
+			protected Binding viewBindingInflate(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent){
+				//noinspection ConstantConditions
+				return null;
+			}
+		};
 	}
 }
