@@ -2,6 +2,7 @@ package pers.u8f23.template_android_project.core;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,11 +13,13 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * 基于{@link ListAdapter}的实现，集成了{@link ViewBinding}和{@link LiveData}，性能不错<s>，并且应该没有bug</s>。
@@ -124,7 +127,7 @@ import java.util.function.BiFunction;
  *         .areSame(ExampleItem::areSame)
  *         .layoutInflater(this.getLayoutInflater())
  *         .bindingInflater(AdapterExampleBinding::inflate)
- *         .itemBinder((binding, data, position) -&gt; {
+ *         .itemBinder((binding, data, position) -&gt {
  *           binding.id.setText(data.getId());
  *           binding.desc.setText(data.getDesc());
  *         })
@@ -134,8 +137,8 @@ import java.util.function.BiFunction;
  *     // 注册列表LiveData监听。
  *     adapter.registerDataSource(viewModel.getDataSource(), this.getViewLifecycleOwner());
  *     // 注册ViewModel更新事件。
- *     this.binding.refreshAsync.setOnClickListener(v -&gt; viewModel.refreshAsync());
- *     this.binding.refreshSync.setOnClickListener(v -&gt; viewModel.refreshSync());
+ *     this.binding.refreshAsync.setOnClickListener(v -&gt viewModel.refreshAsync());
+ *     this.binding.refreshSync.setOnClickListener(v -&gt viewModel.refreshSync());
  *   }
  * }
  * </code></pre>
@@ -160,7 +163,7 @@ public final class LiveDataListAdapter<Binding extends ViewBinding, Type>
 	private final ItemRecycler<Binding> itemRecycler;
 	private final boolean createListCopies;
 	@Nullable
-	private DataSource<Type, ? extends List<? extends Type>> dataSource;
+	private DataSource<?> dataSource;
 
 	private LiveDataListAdapter(
 		@NonNull BiFunction<Type, Type, Boolean> areSame,
@@ -187,13 +190,28 @@ public final class LiveDataListAdapter<Binding extends ViewBinding, Type>
 	public <L extends List<Type>> void registerDataSource(
 		@NonNull LiveData<L> liveData, @NonNull LifecycleOwner lifecycleOwner
 	){
+		this.registerDataSource(liveData, lifecycleOwner, t -> t);
+	}
+
+	/**
+	 * 注册数据监听。
+	 *
+	 * @param liveData       {@link LiveData}数据源。
+	 * @param lifecycleOwner 监听周期对应的{@link LifecycleOwner}实例。
+	 * @param mapper         原始{@link LiveData}转换方式。
+	 */
+	public <L extends List<Type>, LiveDataType> void registerDataSource(
+		@NonNull LiveData<LiveDataType> liveData,
+		@NonNull LifecycleOwner lifecycleOwner,
+		@NonNull Function<LiveDataType, L> mapper
+	){
 		this.unregisterDataSource();
-		Observer<L> observer = (list) -> {
+		Observer<LiveDataType> observer = (data) -> {
 			// 根据创建时的策略决定是否需要拷贝新的List，保证DiffUtil可以准确接收到新的List实例，
 			// 从而有效处理每次提交的新List实例。
-			@Nullable List<Type> submittedList = (list == null)
+			@Nullable List<Type> submittedList = (data == null)
 				? null
-				: (createListCopies ? new ArrayList<>(list) : list);
+				: (createListCopies ? new ArrayList<>(mapper.apply(data)) : mapper.apply(data));
 			this.submitList(submittedList);
 		};
 		liveData.observe(lifecycleOwner, observer);
@@ -204,7 +222,7 @@ public final class LiveDataListAdapter<Binding extends ViewBinding, Type>
 	 * 取消数据监听。
 	 */
 	public void unregisterDataSource(){
-		DataSource<Type, ?> dataSource = this.dataSource;
+		DataSource<?> dataSource = this.dataSource;
 		if (dataSource == null) {
 			return;
 		}
@@ -247,8 +265,9 @@ public final class LiveDataListAdapter<Binding extends ViewBinding, Type>
 
 	/**
 	 * ViewBinding构建接口。
+	 *
 	 * @param <Binding> 组件Binding。
-	 * @see RecyclerView.Adapter#createViewHolder(ViewGroup, int) 
+	 * @see RecyclerView.Adapter#createViewHolder(ViewGroup, int)
 	 */
 	public interface BindingInflater<Binding extends ViewBinding>{
 		/**
@@ -262,9 +281,10 @@ public final class LiveDataListAdapter<Binding extends ViewBinding, Type>
 
 	/**
 	 * 视图绑定方法接口。
+	 *
 	 * @param <Binding> 组件Binding。
 	 * @param <Type>    列表项的类型。
-	 * @see RecyclerView.Adapter#onBindViewHolder(RecyclerView.ViewHolder, int) 
+	 * @see RecyclerView.Adapter#onBindViewHolder(RecyclerView.ViewHolder, int)
 	 */
 	public interface ItemBinder<Binding extends ViewBinding, Type>{
 		/**
@@ -279,8 +299,9 @@ public final class LiveDataListAdapter<Binding extends ViewBinding, Type>
 
 	/**
 	 * 视图回收方法接口。
+	 *
 	 * @param <Binding> 组件Binding。
-	 * @see RecyclerView.Adapter#onViewRecycled(RecyclerView.ViewHolder)    
+	 * @see RecyclerView.Adapter#onViewRecycled(RecyclerView.ViewHolder)
 	 */
 	public interface ItemRecycler<Binding extends ViewBinding>{
 		/**
@@ -446,11 +467,11 @@ public final class LiveDataListAdapter<Binding extends ViewBinding, Type>
 	}
 
 	@AllArgsConstructor
-	private static class DataSource<Type, L extends List<Type>>{
+	private static class DataSource<LiveDataType>{
 		@NonNull
-		private final LiveData<L> source;
+		private final LiveData<LiveDataType> source;
 		@NonNull
-		private final Observer<L> observer;
+		private final Observer<LiveDataType> observer;
 
 		/**
 		 * 清除监听的Observer。
