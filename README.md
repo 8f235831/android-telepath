@@ -1,7 +1,7 @@
-# template-android-project
+# Android Telepath
 
 #### 介绍
-安卓空项目模板。
+Android Intent路径解析器。
 
 #### 特点
 * 使用腾讯云镜像的 Gradle 分发链接；

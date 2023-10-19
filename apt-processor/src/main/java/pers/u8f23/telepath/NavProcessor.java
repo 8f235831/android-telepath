@@ -159,8 +159,10 @@ public class NavProcessor extends AbstractProcessor{
 				GENERATED_CLASS_PACKAGE_NAME, GENERATED_NAV_PERFORMER_CLASS_NAME);
 			ClassName controllerClassName = ClassName.get(NAV_CONTROLLER_PACKAGE_NAME, NAV_CONTROLLER_CLASS_NAME);
 			ClassName nonNullClassName = ClassName.get("androidx.annotation", "NonNull");
+			ClassName nullableClassName = ClassName.get("androidx.annotation", "Nullable");
 			ClassName uriClassName = ClassName.get("android.net", "Uri");
 			ClassName intentClassName = ClassName.get(INTENT_PACKAGE_NAME, INTENT_CLASS_NAME);
+			ClassName loggerClass = ClassName.get("android.util", "Log");
 
 			FieldSpec performerSet = FieldSpec.builder(
 					ParameterizedTypeName.get(ClassName.get(ArrayList.class), mapperNodeClassName),
@@ -176,8 +178,7 @@ public class NavProcessor extends AbstractProcessor{
 					performerClassName,
 					"HOME_PAGE_PERFORMER",
 					Modifier.STATIC,
-					Modifier.FINAL,
-					Modifier.PRIVATE
+					Modifier.PUBLIC
 				)
 				.initializer("$L", homePageMethodClass)
 				.addJavadoc("首页跳转规则。")
@@ -186,8 +187,7 @@ public class NavProcessor extends AbstractProcessor{
 					performerClassName,
 					"ERROR_PAGE_PERFORMER",
 					Modifier.STATIC,
-					Modifier.FINAL,
-					Modifier.PRIVATE
+					Modifier.PUBLIC
 				)
 				.initializer("$L", errorPageMethodClass)
 				.addJavadoc("错误页跳转规则。")
@@ -235,7 +235,7 @@ public class NavProcessor extends AbstractProcessor{
 						.addParameter(ParameterSpec.builder(String.class, "path")
 							.addAnnotation(nonNullClassName)
 							.build())
-						.addAnnotation(nonNullClassName)
+						.addAnnotation(nullableClassName)
 						.returns(performerClassName)
 						.addJavadoc("搜索跳转逻辑。\n")
 						.addJavadoc("@param path 输入路径。")
@@ -247,17 +247,17 @@ public class NavProcessor extends AbstractProcessor{
 						.addStatement("binaryIndex = -(binaryIndex + 2)")
 						.beginControlFlow("if (binaryIndex == -1)")
 						.addComment("无潜在前驱结果。")
-						.addStatement("return ERROR_PAGE_PERFORMER")
+						.addStatement("return null")
 						.endControlFlow()
 						.addStatement("$T previousNode = PERFORMER_LIST.get(binaryIndex)", mapperNodeClassName)
 						.beginControlFlow("if (previousNode == null)")
-						.addStatement("return ERROR_PAGE_PERFORMER")
+						.addStatement("return null")
 						.endControlFlow()
 						.addComment("校验前驱结果是否为当前路径的可行前缀后返回结果。")
 						.beginControlFlow("if (previousNode.isPrefix() && path.startsWith(previousNode.getPath()))")
 						.addStatement("return previousNode.getPerformer()")
 						.endControlFlow()
-						.addStatement("return ERROR_PAGE_PERFORMER")
+						.addStatement("return null")
 						.build())
 					.addMethod(MethodSpec.methodBuilder("performIntent")
 						.addModifiers(Modifier.STATIC, Modifier.PUBLIC)
@@ -278,9 +278,42 @@ public class NavProcessor extends AbstractProcessor{
 						.addStatement("fullPath = uriData.getPath()")
 						.beginControlFlow("if (fullPath != null)")
 						.addStatement("performer = getPerformer(fullPath)")
+						.beginControlFlow("if (performer == null)")
+						.addStatement(
+							"$T.e($S, $S)",
+							loggerClass,
+							GENERATED_CLASS_PACKAGE_NAME,
+							"No performer matched."
+						)
+						.addStatement("performer = ERROR_PAGE_PERFORMER")
+						.endControlFlow()
 						.endControlFlow()
 						.endControlFlow()
 						.addStatement("performer.navigate(controller, fullPath, intent)")
+						.build())
+					.addMethod(MethodSpec.methodBuilder("perform")
+						.addParameter(ParameterSpec.builder(performerClassName, "performer", Modifier.FINAL)
+							.addAnnotation(nullableClassName)
+							.build())
+						.addParameter(ParameterSpec.builder(controllerClassName, "controller", Modifier.FINAL)
+							.addAnnotation(nonNullClassName)
+							.build())
+						.addParameter(ParameterSpec.builder(String.class, "fullPath", Modifier.FINAL)
+							.addAnnotation(nonNullClassName)
+							.build())
+						.addParameter(ParameterSpec.builder(intentClassName, "intent", Modifier.FINAL)
+							.addAnnotation(nonNullClassName)
+							.build())
+						.beginControlFlow("if (performer == null)")
+						.addStatement("return")
+						.endControlFlow()
+						.beginControlFlow("try")
+						.addStatement("performer.navigate(controller, fullPath, intent)")
+						.nextControlFlow("catch (Throwable any)")
+						.beginControlFlow("if (performer != ERROR_PAGE_PERFORMER)")
+						.addStatement("perform(ERROR_PAGE_PERFORMER, controller, fullPath, intent)")
+						.endControlFlow()
+						.endControlFlow()
 						.build())
 					.build()
 			).build();
@@ -443,7 +476,8 @@ public class NavProcessor extends AbstractProcessor{
 					GENERATED_NAV_MANIFEST_FILE_NAME);
 			Writer navManifestWriter = navManifestFile.openWriter();
 			navManifestWriter.write(
-				"导航接口清单文件，自动生成于：" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()) +
+				"导航接口清单文件，自动生成于：" +
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()) +
 					"\npath,\tprefix,\tdescription,\tmethod\n"
 			);
 			for (NavAptMapperNode mapperNode : this.mapperNodeSet) {
