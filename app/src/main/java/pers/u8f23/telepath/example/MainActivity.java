@@ -1,9 +1,9 @@
-package pers.u8f23.template_android_project;
+package pers.u8f23.telepath.example;
 
 import android.view.LayoutInflater;
 
-import pers.u8f23.template_android_project.core.BaseActivity;
-import pers.u8f23.template_android_project.databinding.ActivityMainBinding;
+import pers.u8f23.telepath.example.core.BaseActivity;
+import pers.u8f23.telepath.databinding.ActivityMainBinding;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding>{
 

@@ -1,4 +1,4 @@
-package pers.u8f23.template_android_project;
+package pers.u8f23.telepath;
 
 import org.junit.Test;
 

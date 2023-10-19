@@ -9,3 +9,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "android-telepath"
 include ':app'
+
+// 项目自定义APT。
+include ':apt-annotation'
+include ':apt-processor'

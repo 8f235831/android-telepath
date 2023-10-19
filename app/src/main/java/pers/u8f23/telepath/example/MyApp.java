@@ -1,4 +1,4 @@
-package pers.u8f23.template_android_project;
+package pers.u8f23.telepath.example;
 
 import android.app.Application;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.multidex.MultiDex;
+import pers.u8f23.telepath.BuildConfig;
 
 import java.lang.ref.WeakReference;
 

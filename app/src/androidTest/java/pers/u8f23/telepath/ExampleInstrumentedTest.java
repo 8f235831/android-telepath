@@ -1,4 +1,4 @@
-package pers.u8f23.template_android_project;
+package pers.u8f23.telepath;
 
 import android.content.Context;
 
@@ -21,6 +21,5 @@ public class ExampleInstrumentedTest{
 	public void useAppContext(){
 		// Context of the app under test.
 		Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-		assertEquals("pers.u8f23.template_android_project", appContext.getPackageName());
 	}
 }

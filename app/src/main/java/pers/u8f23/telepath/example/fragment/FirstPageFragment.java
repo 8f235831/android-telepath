@@ -1,4 +1,4 @@
-package pers.u8f23.template_android_project.fragment;
+package pers.u8f23.telepath.example.fragment;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 
-import pers.u8f23.template_android_project.core.BaseFragment;
-import pers.u8f23.template_android_project.databinding.FragmentFirstPageBinding;
+import pers.u8f23.telepath.example.core.BaseFragment;
+import pers.u8f23.telepath.databinding.FragmentFirstPageBinding;
 
 /**
  * @author 8f23

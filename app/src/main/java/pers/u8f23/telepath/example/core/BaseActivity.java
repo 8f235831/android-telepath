@@ -1,6 +1,5 @@
-package pers.u8f23.template_android_project.core;
+package pers.u8f23.telepath.example.core;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

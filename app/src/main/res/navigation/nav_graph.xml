@@ -6,17 +6,17 @@
         app:startDestination="@id/fragment_home_page">
     <fragment
             android:id="@+id/fragment_home_page"
-            android:name="pers.u8f23.template_android_project.fragment.HomePageFragment"
+            android:name="pers.u8f23.telepath.example.fragment.HomePageFragment"
             android:label="fragment_home_page"
             tools:layout="@layout/fragment_home_page"/>
     <fragment
             android:id="@+id/fragment_first_page"
-            android:name="pers.u8f23.template_android_project.fragment.FirstPageFragment"
+            android:name="pers.u8f23.telepath.example.fragment.FirstPageFragment"
             android:label="fragment_first_page"
             tools:layout="@layout/fragment_first_page"/>
     <fragment
             android:id="@+id/fragment_second_page"
-            android:name="pers.u8f23.template_android_project.fragment.SecondPageFragment"
+            android:name="pers.u8f23.telepath.example.fragment.SecondPageFragment"
             android:label="fragment_second_page"
             tools:layout="@layout/fragment_second_page"/>
 </navigation>
