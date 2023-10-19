@@ -7,5 +7,5 @@ dependencyResolutionManagement {
     apply from: './define.gradle'
     addRepos(repositories) //增加代码仓库
 }
-rootProject.name = "template-android-project"
+rootProject.name = "android-telepath"
 include ':app'
