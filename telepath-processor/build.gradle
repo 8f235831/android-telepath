@@ -9,8 +9,8 @@ java {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':telepath-annotation')
 
-    implementation project(":apt-annotation")
 
     //noinspection AnnotationProcessorOnCompilePath
     implementation 'com.google.auto.service:auto-service:1.0-rc6'
