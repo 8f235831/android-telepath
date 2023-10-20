@@ -8,21 +8,20 @@ java {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':telepath-annotation')
-
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 
     //noinspection AnnotationProcessorOnCompilePath
-    implementation 'com.google.auto.service:auto-service:1.0-rc6'
+    compileOnly 'com.google.auto.service:auto-service:1.0-rc6'
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc6'
     // java poet
-    implementation 'com.squareup:javapoet:1.13.0'
+    compileOnly 'com.squareup:javapoet:1.13.0'
 
     // Lombok，用于自动化生成Pojo类方法。
     //noinspection AnnotationProcessorOnCompilePath
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
+    compileOnly 'com.google.android:android:4.1.1.4'
 }
 
 tasks.withType(JavaCompile) {

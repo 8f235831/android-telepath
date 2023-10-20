@@ -1,10 +1,6 @@
 package pers.u8f23.telepath;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 用于实现外部intent跳转的注解。请在对应静态方法上标记此注解，并在其参数上使用对应的注解标记。

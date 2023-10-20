@@ -11,5 +11,4 @@ rootProject.name = "android-telepath"
 include ':app'
 
 // 项目自定义APT。
-include ':telepath-annotation'
-include ':telepath-processor'
+include ':android-telepath'
